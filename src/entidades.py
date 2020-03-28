@@ -185,9 +185,9 @@ class Tienda:
 
     def simular(self):
 
-        # Tules that represent an evvent
-        # t[0]: time
-        # t[1]: worker
+        
+        # t[0]: tiempo
+        # t[1]: trabajador
         self.tiempoActual= 0
         self.proximaReparacion = (self.inf, None)
         self.proximaVenta = (self.inf, None)
@@ -204,7 +204,7 @@ class Tienda:
         self.proximoArribo = (self.generarProximoArribo(), None)
         print('Comienza un nuevo dia en la Tienda')
 
-        # Simulation Loop
+        
         while not (self.tiempoActual + self.proximoArribo[0] > self.tiempoDeTrabajo  and self.clientesActuales == 0):
             print('='*50)
             print('La ganancia actual es de: ' + str(self.ganancia))
@@ -213,10 +213,10 @@ class Tienda:
             self.proximaReparacion = self.actualizarProximaReparacion()
 
             proximoEvento = self.proximoEvento()
-            # Arrival
+            # Arribo
             if self.tiempoActual + self.proximoArribo[0] == proximoEvento[0] and \
                     self.tiempoActual + self.proximoArribo[0] <= self.tiempoDeTrabajo:
-                # Move the time and add a client
+                # actualiza el tiempo y aumentar los clientes
                 self.tiempoActual += self.proximoArribo[0]
                 self.clientesActuales += 1
                 print('Arriba un nuevo cliente en el minuto' + str(self.tiempoActual))
@@ -244,12 +244,12 @@ class Tienda:
                         self.proximaVenta = self.actualizarProximaVenta()
                 else:
                     print('No hay vendedores disponibles, ultimo!!!')
-                    self.cola.append((self.tiempoActual, 'Wait'))
+                    self.cola.append((self.tiempoActual, 'Esperar'))
 
-                # Generate next arrival time
+                # Generar proximo arribo
                 self.proximoArribo = (self.generarProximoArribo(), None)
 
-            # Reparation
+            # Reparacion
 
             elif self.proximaReparacion[0] == proximoEvento[0]:
                 self.ganancia += self.costos[self.proximaReparacion[1].servicio]
@@ -281,7 +281,7 @@ class Tienda:
                         self.trabajar(self.proximaReparacion[1].id,cliente[1],tiempoDeReparacion,self.tecnicos)
                         
                     self.proximaReparacion = self.actualizarProximaReparacion()
-            # Change
+            # Cambio
             elif self.proximoCambio[0] == proximoEvento[0]:
                 self.ganancia += self.costos[self.proximoCambio[1].servicio]
                 self.tiempoActual = self.proximoCambio[0]
@@ -295,7 +295,7 @@ class Tienda:
                     self.trabajar(self.proximoCambio[1].id,cliente[1],tiempoDeCambio,self.especialistas)
 
                 self.proximoCambio = self.actualizarProximoCambio()
-            # Sell
+            # Venta
             elif self.proximaVenta[0] == proximoEvento[0]:
                 self.ganancia += self.costos[self.proximaVenta[1].servicio]
                 self.tiempoActual = self.proximaVenta[0]
